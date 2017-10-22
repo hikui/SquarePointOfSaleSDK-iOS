@@ -43,6 +43,7 @@ NSString *__nonnull const SCCAPIRequestOptionsKey = @"options";
 NSString *__nonnull const SCCAPIRequestOptionsSupportedTenderTypesKey = @"supported_tender_types";
 NSString *__nonnull const SCCAPIRequestOptionsClearDefaultFeesKey = @"clear_default_fees";
 NSString *__nonnull const SCCAPIRequestOptionsAutoReturnKey = @"auto_return";
+NSString *__nonnull const SCCAPIRequestOptionsSkipReceiptKey = @"skip_receipt";
 NSString *__nonnull const SCCAPIRequestOptionsTenderTypeStringCard = @"CREDIT_CARD";
 NSString *__nonnull const SCCAPIRequestOptionsTenderTypeStringCash = @"CASH";
 NSString *__nonnull const SCCAPIRequestOptionsTenderTypeStringOther = @"OTHER";
@@ -84,6 +85,7 @@ static NSString *__nullable APIClientID = nil;
                            supportedTenderTypes:(SCCAPIRequestTenderTypes)supportedTenderTypes
                               clearsDefaultFees:(BOOL)clearsDefaultFees
                 returnAutomaticallyAfterPayment:(BOOL)autoreturn
+                                    skipReceipt:(BOOL)skipReceipt
                                           error:(out NSError *__nullable *__nullable)error;
 {
     if (![self.class _clientID].length) {
@@ -116,7 +118,8 @@ static NSString *__nullable APIClientID = nil;
                                customerID:customerID
                      supportedTenderTypes:supportedTenderTypes
                         clearsDefaultFees:clearsDefaultFees
-          returnAutomaticallyAfterPayment:autoreturn];
+          returnAutomaticallyAfterPayment:autoreturn
+                              skipReceipt:skipReceipt];
 }
 
 - (instancetype)initWithClientID:(nonnull NSString *)clientID
@@ -128,7 +131,8 @@ static NSString *__nullable APIClientID = nil;
                       customerID:(nullable NSString *)customerID
             supportedTenderTypes:(SCCAPIRequestTenderTypes)supportedTenderTypes
                clearsDefaultFees:(BOOL)clearsDefaultFees
- returnAutomaticallyAfterPayment:(BOOL)autoreturn;
+ returnAutomaticallyAfterPayment:(BOOL)autoreturn
+                     skipReceipt:(BOOL)skipReceipt;
 {
     NSAssert(callbackURL.scheme.length, @"Callback URL must be specified and have a scheme.");
     NSAssert(amount && amount.amountCents >= 0, @"SCCMoney amount must be specified.");
@@ -148,6 +152,7 @@ static NSString *__nullable APIClientID = nil;
     _clearsDefaultFees = clearsDefaultFees;
     _returnsAutomaticallyAfterPayment = autoreturn;
     _customerID = [customerID copy];
+    _skipReceipt = skipReceipt;
 
     return self;
 }
@@ -254,6 +259,7 @@ static NSString *__nullable APIClientID = nil;
     [options SCC_setSafeObject:supportedTenderTypes forKey:SCCAPIRequestOptionsSupportedTenderTypesKey];
     [options SCC_setSafeObject:@(self.clearsDefaultFees) forKey:SCCAPIRequestOptionsClearDefaultFeesKey];
     [options SCC_setSafeObject:@(self.returnsAutomaticallyAfterPayment) forKey:SCCAPIRequestOptionsAutoReturnKey];
+    [options SCC_setSafeObject:@(self.skipReceipt) forKey:SCCAPIRequestOptionsSkipReceiptKey];
     if (options.count) {
         [data SCC_setSafeObject:options forKey:SCCAPIRequestOptionsKey];
     }

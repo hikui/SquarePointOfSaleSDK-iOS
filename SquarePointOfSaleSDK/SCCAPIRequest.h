@@ -75,6 +75,7 @@ typedef NS_OPTIONS(NSUInteger, SCCAPIRequestTenderTypes) {
    to appear in Point of Sale before the auto return timeout elapses, we will not automatically switch back to your application, regardless
    of the value of this parameter.
  @param customerID The Square-issued ID for the merchant's customer associated with this transaction.
+ @param skipReceipt If YES, Square Register does not display digital receipt options for the buyer after the transaction completes.
  @param error Stores an error (domain SCCErrorDomain) in the event one or more parameters are invalid.
  */
 + (nullable instancetype)requestWithCallbackURL:(nonnull NSURL *)callbackURL
@@ -82,10 +83,11 @@ typedef NS_OPTIONS(NSUInteger, SCCAPIRequestTenderTypes) {
                                  userInfoString:(nullable NSString *)userInfoString
                                      merchantID:(nullable NSString *)merchantID
                                           notes:(nullable NSString *)notes
-                                     customerID:(nullable NSString*)customerID
+                                     customerID:(nullable NSString *)customerID
                            supportedTenderTypes:(SCCAPIRequestTenderTypes)supportedTenderTypes
                               clearsDefaultFees:(BOOL)clearsDefaultFees
                 returnAutomaticallyAfterPayment:(BOOL)autoreturn
+                                    skipReceipt:(BOOL)skipReceipt
                                           error:(out NSError *__nullable *__nullable)error;
 
 /// Application Client ID bound to the request at the time of creation.
@@ -121,6 +123,10 @@ typedef NS_OPTIONS(NSUInteger, SCCAPIRequestTenderTypes) {
 /// to appear in Point of Sale before the auto return timeout elapses, we will not automatically switch back to your application, regardless
 /// of the value of this parameter.
 @property (nonatomic, assign, readonly) BOOL returnsAutomaticallyAfterPayment;
+
+/// If YES, Square Register does not display digital receipt options for the buyer after the transaction completes.
+/// Default value: NO
+@property (nonatomic, assign, readonly) BOOL skipReceipt;
 
 /**
  @param request The request to compare the receiver to.
